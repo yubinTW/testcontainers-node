@@ -94,9 +94,12 @@ class ConfigurationStrategy implements DockerClientStrategy {
 
 class UnixSocketStrategy implements DockerClientStrategy {
   async initialise(): Promise<{ uri: string; dockerode: Dockerode }> {
+    const { DOCKER_HOST } = process.env;
+    const { href, pathname } = new URL(DOCKER_HOST || "unix:///var/run/docker.sock");
+
     return {
-      uri: "unix:///var/run/docker.sock",
-      dockerode: new Dockerode({ socketPath: "/var/run/docker.sock" }),
+      uri: href,
+      dockerode: new Dockerode({ socketPath: pathname }),
     };
   }
 
